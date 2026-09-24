@@ -73,5 +73,7 @@ class Vendedor:
     def get_meses_procesados(self):
         return self.meses_procesados
 
+#=======================str========================
+
     def __str__(self):
         return "||Cedula: "+self.get_cedula()+" \n||Nombre: "+self.get_nombre()+" \n||Categoria: "+self.get_categoria()+" \n||Salario Base: "+str(self.get_salario_base())+" \n||Meta Mensual: "+str(self.get_meta_mensual())+" \n||Ventas Acumuladas: "+str(self.get_ventas_acumuladas())+" \n||Comisiones Acumuladas: "+str(self.get_comisiones_acumuladas())+" \n||Meses Procesados: "+str(self.get_meses_procesados())
