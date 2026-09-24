@@ -12,66 +12,66 @@ class Vendedor:
 #========================cedula========================
 
     def set_cedula(self, cedula):
-        self.cedula = cedula
+        self.__cedula = cedula
 
     def get_cedula(self):
-        return self.cedula
+        return self.__cedula
 
 #=======================nombre========================
 
     def set_nombre(self, nombre):
-        self.nombre = nombre
+        self.__nombre = nombre
 
     def get_nombre(self):
-        return self.nombre
+        return self.__nombre
 
 #=======================categoria========================
 
     def set_categoria(self, categoria):
-        self.categoria = categoria
+        self.__categoria = categoria
 
     def get_categoria(self):
-        return self.categoria
+        return self.__categoria
 
 #=======================salario_base========================
 
     def set_salario_base(self, salario_base):
-        self.salario_base = salario_base
+        self.__salario_base = salario_base
 
     def get_salario_base(self):
-        return self.salario_base
+        return self.__salario_base
 
 #=======================meta_mensual========================
 
     def set_meta_mensual(self, meta_mensual):
-        self.meta_mensual = meta_mensual
+        self.__meta_mensual = meta_mensual
 
     def get_meta_mensual(self):
-        return self.meta_mensual
+        return self.__meta_mensual
 
 #=======================ventas_acumuladas========================
 
     def set_ventas_acumuladas(self, ventas_acumuladas):
-        self.ventas_acumuladas = ventas_acumuladas
+        self.__ventas_acumuladas = ventas_acumuladas
 
     def get_ventas_acumuladas(self):
-        return self.ventas_acumuladas
+        return self.__ventas_acumuladas
 
 #=======================comisiones_acumuladas========================
 
     def set_comisiones_acumuladas(self, comisiones_acumuladas):
-        self.comisiones_acumuladas = comisiones_acumuladas
+        self.__comisiones_acumuladas = comisiones_acumuladas
 
     def get_comisiones_acumuladas(self):
-        return self.comisiones_acumuladas
+        return self.__comisiones_acumuladas
 
 #=======================meses_procesados========================
 
     def set_meses_procesados(self, meses_procesados):
-        self.meses_procesados = meses_procesados
+        self.__meses_procesados = meses_procesados
 
     def get_meses_procesados(self):
-        return self.meses_procesados
+        return self.__meses_procesados
 
 #=======================str========================
 
