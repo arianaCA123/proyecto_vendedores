@@ -173,99 +173,6 @@ class RegistroVendedores:
             posicion = posicion + 1
 
     # ==================================================
-    # CÁLCULOS DE PLANILLA
-    # ==================================================
-
-    # Porcentaje de cumplimiento de la meta
-    def calcular_porcentaje_cumplimiento(self, posicion):
-        meta = self.__vendedores[posicion].get_meta_mensual()
-        return (self.__ventas_mes[posicion] / meta) * 100
-
-    # Comisión inicial según el cumplimiento
-    def calcular_comision_inicial(self, posicion):
-        ventas = self.__ventas_mes[posicion]
-        porcentaje = self.calcular_porcentaje_cumplimiento(posicion)
-
-        if porcentaje < 80:
-            return 0
-        elif porcentaje < 100:
-            return ventas * 0.02
-        elif porcentaje < 120:
-            return ventas * 0.04
-        else:
-            return ventas * 0.06
-
-    # Ajuste por categoría (Junior 0%, SemiSenior 10%, Senior 20%)
-    def calcular_ajuste_categoria(self, posicion):
-        comision_inicial = self.calcular_comision_inicial(posicion)
-        categoria = self.__vendedores[posicion].get_categoria()
-
-        if categoria == "SemiSenior":
-            return comision_inicial * 0.10
-        elif categoria == "Senior":
-            return comision_inicial * 0.20
-        else:
-            return 0
-
-    # Comisión final = comisión inicial + ajuste
-    def calcular_comision_final(self, posicion):
-        return self.calcular_comision_inicial(posicion) + self.calcular_ajuste_categoria(posicion)
-
-    # Pago de horas extra
-    def calcular_pago_horas_extra(self, posicion):
-        salario_base = self.__vendedores[posicion].get_salario_base()
-        valor_hora = salario_base / 240
-        valor_hora_extra = valor_hora * 1.5
-        return valor_hora_extra * self.__horas_extra[posicion]
-
-    # Bono automático si cumple 110% o más
-    def calcular_bono_rendimiento(self, posicion):
-        if self.calcular_porcentaje_cumplimiento(posicion) >= 110:
-            return 50000
-        else:
-            return 0
-
-    # Deducción por ausencias
-    def calcular_deduccion_ausencias(self, posicion):
-        salario_base = self.__vendedores[posicion].get_salario_base()
-        valor_dia = salario_base / 30
-        return valor_dia * self.__dias_ausencia[posicion]
-
-    # Total de ingresos
-    def calcular_total_ingresos(self, posicion):
-        salario_base = self.__vendedores[posicion].get_salario_base()
-        return (salario_base
-                + self.calcular_pago_horas_extra(posicion)
-                + self.calcular_comision_final(posicion)
-                + self.calcular_bono_rendimiento(posicion)
-                + self.__bonos_especiales[posicion])
-
-    # Salario ajustado
-    def calcular_salario_ajustado(self, posicion):
-        return self.calcular_total_ingresos(posicion) - self.calcular_deduccion_ausencias(posicion)
-
-    # Deducción obligatoria (10%)
-    def calcular_deduccion_obligatoria(self, posicion):
-        return self.calcular_salario_ajustado(posicion) * 0.10
-
-    # Impuesto académico por tramos
-    def calcular_impuesto(self, posicion):
-        salario_ajustado = self.calcular_salario_ajustado(posicion)
-
-        if salario_ajustado <= 1000000:
-            return 0
-        elif salario_ajustado <= 1500000:
-            return (salario_ajustado - 1000000) * 0.10
-        else:
-            return 500000 * 0.10 + (salario_ajustado - 1500000) * 0.15
-
-    # Salario neto
-    def calcular_salario_neto(self, posicion):
-        return (self.calcular_salario_ajustado(posicion)
-                - self.calcular_deduccion_obligatoria(posicion)
-                - self.calcular_impuesto(posicion))
-
-    # ==================================================
     # PROCESAR PLANILLA DE UN VENDEDOR
     # ==================================================
 
@@ -279,14 +186,17 @@ class RegistroVendedores:
         if self.__planilla_procesada[posicion] == True:
             return "YA_PROCESADA"
 
-        comision_final = self.calcular_comision_final(posicion)
-        salario_neto = self.calcular_salario_neto(posicion)
+        vendedor = self.__vendedores[posicion]
+        ventas = self.__ventas_mes[posicion]
+        horas = self.__horas_extra[posicion]
+        dias = self.__dias_ausencia[posicion]
+        bono = self.__bonos_especiales[posicion]
+
+        comision_final = vendedor.calcular_comision_final(ventas)
+        salario_neto = vendedor.calcular_salario_neto(ventas, horas, dias, bono)
 
         # Se actualizan los acumulados del objeto con get y set
-        vendedor = self.__vendedores[posicion]
-        vendedor.set_ventas_acumuladas(vendedor.get_ventas_acumuladas() + self.__ventas_mes[posicion])
-        vendedor.set_comisiones_acumuladas(vendedor.get_comisiones_acumuladas() + comision_final)
-        vendedor.set_meses_procesados(vendedor.get_meses_procesados() + 1)
+        vendedor.actualizar_acumulados(ventas, comision_final)
 
         # Se actualizan las listas asociadas
         self.__planilla_procesada[posicion] = True
@@ -329,7 +239,7 @@ class RegistroVendedores:
         mayor_porcentaje = 0
         posicion = 0
         for vendedor in self.__vendedores:
-            porcentaje = self.calcular_porcentaje_cumplimiento(posicion)
+            porcentaje = vendedor.calcular_porcentaje_cumplimiento(self.__ventas_mes[posicion])
             if mayor is None or porcentaje > mayor_porcentaje:
                 mayor = vendedor
                 mayor_porcentaje = porcentaje
@@ -354,7 +264,7 @@ class RegistroVendedores:
         bajo_meta = []
         posicion = 0
         for vendedor in self.__vendedores:
-            if self.calcular_porcentaje_cumplimiento(posicion) < 100:
+            if vendedor.calcular_porcentaje_cumplimiento(self.__ventas_mes[posicion]) < 100:
                 bajo_meta.append(vendedor)
             posicion = posicion + 1
         return bajo_meta

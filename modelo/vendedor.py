@@ -73,6 +73,78 @@ class Vendedor:
     def get_meses_procesados(self):
         return self.__meses_procesados
 
+#=======================calculos========================
+
+    def calcular_porcentaje_cumplimiento(self, ventas_mes):
+        return (ventas_mes / self.get_meta_mensual()) * 100
+
+#=======================================================
+
+    def calcular_comision_inicial(self, ventas_mes):
+        porcentaje = self.calcular_porcentaje_cumplimiento(ventas_mes)
+        if porcentaje < 80:
+            return 0
+        elif porcentaje < 100:
+            return ventas_mes * 0.02
+        elif porcentaje < 120:
+            return ventas_mes * 0.04
+        else:
+            return ventas_mes * 0.06
+
+#=======================================================
+
+    def calcular_comision_final(self, ventas_mes):
+        comision_inicial = self.calcular_comision_inicial(ventas_mes)
+        if self.get_categoria() == "SemiSenior":
+            return comision_inicial * 1.10
+        elif self.get_categoria() == "Senior":
+            return comision_inicial * 1.20
+        return comision_inicial
+
+#=======================================================
+
+    def calcular_pago_horas_extra(self, horas_extra):
+        valor_hora = self.get_salario_base() / 240
+        return valor_hora * 1.5 * horas_extra
+
+#=======================================================
+
+    def calcular_bono_rendimiento(self, ventas_mes):
+        return 50000 if self.calcular_porcentaje_cumplimiento(ventas_mes) >= 110 else 0
+
+#=======================================================
+
+    def calcular_deduccion_ausencias(self, dias_ausencia):
+        return (self.get_salario_base() / 30) * dias_ausencia
+
+#=======================================================
+
+    def calcular_salario_neto(self, ventas_mes, horas_extra, dias_ausencia, bono_especial):
+        comision_final = self.calcular_comision_final(ventas_mes)
+        total_ingresos = (self.get_salario_base()
+                           + self.calcular_pago_horas_extra(horas_extra)
+                           + comision_final
+                           + self.calcular_bono_rendimiento(ventas_mes)
+                           + bono_especial)
+        
+        salario_ajustado = total_ingresos - self.calcular_deduccion_ausencias(dias_ausencia)
+        deduccion_obligatoria = salario_ajustado * 0.10
+        
+        if salario_ajustado <= 1000000:
+            impuesto = 0
+        elif salario_ajustado <= 1500000:
+            impuesto = (salario_ajustado - 1000000) * 0.10
+        else:
+            impuesto = 500000 * 0.10 + (salario_ajustado - 1500000) * 0.15
+        return salario_ajustado - deduccion_obligatoria - impuesto
+
+#=======================================================
+
+    def actualizar_acumulados(self, ventas_mes, comision_final):
+        self.set_ventas_acumuladas(self.get_ventas_acumuladas() + ventas_mes)
+        self.set_comisiones_acumuladas(self.get_comisiones_acumuladas() + comision_final)
+        self.set_meses_procesados(self.get_meses_procesados() + 1)
+
 #=======================str========================
 
     def __str__(self):

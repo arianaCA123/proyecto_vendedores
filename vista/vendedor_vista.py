@@ -92,11 +92,11 @@ class VendedorVista:
     #mostrar informacion
     
     def mostrar_mensaje(self, mensaje):
-    print(mensaje)
+        print(mensaje)
      
      #muestra la informacion de un vendedor 6.2
     def mostrar_info_vendedor(self, vendedor, ventas_mes, horas_extra, dias_ausencia, bono_especial, planilla_procesada, salario_neto):
-         print()
+        print()
         print("====== INFORMACIÓN DEL VENDEDOR ======")
         print("Cédula:", vendedor.get_cedula())
         print("Nombre:", vendedor.get_nombre())
