@@ -1,5 +1,5 @@
 class VendedorVista:
-    #__Menu principal
+    #Menu principal
     def mostrar_menu(self):
         print()
         print("------- SISTEMA DE GESTION DE VENDEDORES -------")
@@ -11,7 +11,7 @@ class VendedorVista:
         print("6) Iniciar nuevo mes  ")
         print("7) Salir ")
         return input("Seleccione una opcion: ")
-   #submenus
+   #submenu de vendedores
     def mostrar_submenu_vendedores(self):
         print()
         print("------- GESTION DE VENDEDORES -----_--")
@@ -22,7 +22,7 @@ class VendedorVista:
         print("5) Listar vendedores")
         print("6) Regresar")
         return input("Seleccione una opcion: ")
-
+     #submenu de reportes
     def mostrar_submenu_reportes(self):
         print()
         print("------- REPORTES -------")
@@ -37,8 +37,9 @@ class VendedorVista:
         print("9) Regresar  ")
         return input("Selecciona una opcion: ")
         
-     #_____Datos para registrar el vendedor  (la categoria se comprara y se asigna)
+     
     #_____________________________________________________________________________
+    #Datos para registrar el vendedor  (la categoria se comprara y se asigna)
     def solicitar_cedula(self):
         return input("Digite la Cedula: ")
         
@@ -57,8 +58,10 @@ class VendedorVista:
     def solicitar_meta_mensual(self):
         return float(input("Digite la meta mensual: "))
 
-    #datos que se modifican al vendedor
+    
     #______________________________________________________
+    #datos que se modifican al vendedor
+    
     def solicitar_nuevo_nombre(self):
         return input("Digite el nuevo nombre: ")
 
@@ -74,8 +77,13 @@ class VendedorVista:
     def solicitar_nueva_meta_mensual(self):
         return float(input("Digite la nueva meta mensual: "))
 
-    #datos mensuales (modificacion)
+    
     #__________________________________________________________
+    #datos mensuales (modificacion)
+    
+    #al registrar un vendedor los valores iniciales sean 0,
+    #estos se utilizan cuando el usuario registra o modifica la información del mes
+    
     def solicitar_ventas_mes(self):
         return float(input("Digite las ventas del mes: "))
 
@@ -91,29 +99,97 @@ class VendedorVista:
    #________________________________________________________
     #mostrar informacion
     
+    def mostrar_titulo_vendedores(self):
+        print()
+        print("===== VENDEDORES REGISTRADOS =====")
+    
+    def mostrar_vendedor(self, vendedor):    #(listar vendedores del submenu vendedores)
+        print()
+        print(vendedor)
+        print("=========================")    
+    
     def mostrar_mensaje(self, mensaje):
         print(mensaje)
      
-     #muestra la informacion de un vendedor 6.2
+    #muestra la informacion de (consultar)vendedor y listas asociadas
     def mostrar_info_vendedor(self, vendedor, ventas_mes, horas_extra, dias_ausencia, bono_especial, planilla_procesada, salario_neto):
         print()
-        print("====== INFORMACIÓN DEL VENDEDOR ======")
-        print("Cédula:", vendedor.get_cedula())
+        print("======== INFORMACION DEL VENDEDOR ========")
+        print("Cedula:", vendedor.get_cedula())
         print("Nombre:", vendedor.get_nombre())
         print("Categoría:", vendedor.get_categoria())
         print("Salario base:", vendedor.get_salario_base())
         print("Meta mensual:", vendedor.get_meta_mensual())
+        print("__________________________________________")
         print("Ventas del mes:", ventas_mes)
         print("Horas extra:", horas_extra)
         print("Días de ausencia:", dias_ausencia)
         print("Bono especial:", bono_especial)
+        print("__________________________________________")
         print("Ventas acumuladas:", vendedor.get_ventas_acumuladas())
         print("Comisiones acumuladas:", vendedor.get_comisiones_acumuladas())
         print("Meses procesados:", vendedor.get_meses_procesados())
+        print("__________________________________________")
         print("Planilla procesada:", planilla_procesada)
+        
 
         if planilla_procesada:
-            print("Salario neto del mes:", salario_neto)
+            print("Salario neto:", salario_neto)
+        
+        print("=========================================")
     
+    def mostrar_planilla(self, vendedor, ventas_mes, horas_extra,
+                         bono_especial, porcentaje_cumplimiento,
+                         comision_inicial, ajuste_categoria,
+                         comision_final, pago_horas_extra,
+                         bono_rendimiento, total_ingresos,
+                         deduccion_ausencias, deduccion_obligatoria,
+                         impuesto_academico, salario_neto):
+        print()
+        print("============= DESGLOSE DE PLANILLA DEL VENDEDOR ============")
+        print()
+        #nombre y categoria
+        print("Nombre: ",vendedor.get_nombre())
+        print("Categoria: ",vendedor.get_categoria())
+        
+        #salario base
+        print("Salario base: ",vendedor.get_salario_base())
+        
+        #ventas, meta y porcentaje
+        print("Ventas realizadas: ", ventas_mes)
+        print("Meta mensual: ",vendedor.get_meta_mensual())
+        print("Porcentaje de cumplimiento: ", porcentaje_cumplimiento)
+        
+        #comision inicial, ajuste por categoria,comision final
+        print("Comisión inicial: ", comision_inicial)
+        print("Ajuste por categoría: ", ajuste_categoria)
+        print("Comisión final: ", comision_final)
+        
+        #horas extra y pago
+        print("Horas extra: ", horas_extra)
+        print("Pago por horas extra: ", pago_horas_extra)
+        
+         # bonos
+        print("Bono por rendimiento:", bono_rendimiento)
+        print("Bono especial:", bono_especial)
+        
+        
+        # total de ingresos
+        print("Total de ingresos:", total_ingresos)
+
+        # deducciones
+        print("Deducción por ausencias:", deduccion_ausencias)
+        print("Deducción obligatoria:", deduccion_obligatoria)
+        print("Impuesto académico:", impuesto_academico)
+
+        # salario neto
+        print("Salario neto:", salario_neto)
+
+        print("=====================================================")
+
+        
+        
+        
+        
     
  
