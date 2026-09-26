@@ -171,11 +171,11 @@ class Vendedor:
         self.set_meses_procesados(self.get_meses_procesados() + 1)
 
 #=======================================================================
-#================ ******* porcentaje de categoria ******* ================
+#================ ******* AJUSTE CATEGORIA ******* ================
 #=======================================================================
 
     #sirve para obtener el porcentaje de ajuste de acuerdo a la categoria del vendedor
-    def porcentaje_categoria(self):
+    def ajuste_categoria(self):
         if self.get_categoria() == "Junior":
             return "0.0"
         elif self.get_categoria() == "SemiSenior":
