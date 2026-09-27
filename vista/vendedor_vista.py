@@ -40,6 +40,7 @@ class VendedorVista:
      
     #_____________________________________________________________________________
     #Datos para registrar el vendedor  (la categoria se comprara y se asigna)
+    
     def solicitar_cedula(self):
         return input("Digite la Cedula: ")
         
