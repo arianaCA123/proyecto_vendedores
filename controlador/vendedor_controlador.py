@@ -66,7 +66,7 @@ class VendedorControlador:
             self.vista.mostrar_datos_vendedor(vendedor)
 
         else:
-            self.vista.mostrar_mensaje("Vendedor no encontrado. Verifique la cedula ingeresada.")
+            self.vista.mostrar_mensaje("Vendedor no encontrado. Verifique la cedula ingresada.")
 
     def modificar_vendedor(self):
         cedula = self.vista.solicitar_cedula()
