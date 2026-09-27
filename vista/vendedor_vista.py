@@ -162,7 +162,7 @@ class VendedorVista:
         
         #comision inicial, ajuste por categoria,comision final
         print("Comisión inicial: ", comision_inicial)
-        print("Ajuste por categoría: ", ajuste_categoria)
+        print("Ajuste por categoría: ", ajuste_categoria, " % ")
         print("Comisión final: ", comision_final)
         
         #horas extra y pago
