@@ -58,16 +58,39 @@ class VendedorControlador:
         else:
             self.vista.mostrar_mensaje("Error al registrar el vendedor.")
     
-    def consultar_vendedor(self):
+    """def consultar_vendedor(self):
         cedula = self.vista.solicitar_cedula()
-        vendedor = self.registro.buscar_vendedor(cedula)
+        vendedor = self.registro.buscar_vendedor(cedula)      #solo imprime vendedor y no las listas asociadas (6.2 dice que tiene que ir la info de listas)
+                                                              #busca el vendedor por un metodo de buscar_vendedor, pero en registro el metodo es buscar_por cedula 
 
         if (vendedor is not None):
             self.vista.mostrar_datos_vendedor(vendedor)
 
         else:
-            self.vista.mostrar_mensaje("Vendedor no encontrado. Verifique la cedula ingresada.")
+            self.vista.mostrar_mensaje("Vendedor no encontrado. Verifique la cedula ingresada.")"""
+    
+                
+    def consultar_vendedor(self):
+        cedula = self.vista.solicitar_cedula()
+        vendedor = self.registro.buscar_por_cedula(cedula)
 
+        if vendedor is not None:
+            posicion = self.registro.buscar_posicion(cedula)      #busca la posicion de acuerdo a la lista
+
+            ventas_mes = self.registro.get_ventas_mes(posicion)       #conjunto de listas asociadas
+            horas_extra = self.registro.get_horas_extra(posicion)
+            dias_ausencia = self.registro.get_dias_ausencia(posicion)
+            bono_especial = self.registro.get_bono_especial(posicion)
+            planilla_procesada = self.registro.get_planilla_procesada(posicion)
+            salario_neto = self.registro.get_salario_neto_mes(posicion)
+
+            self.vista.mostrar_info_vendedor(vendedor,ventas_mes,horas_extra,dias_ausencia,bono_especial,planilla_procesada,salario_neto)  #imprime info del vendedor y de listas
+
+        else:
+            self.vista.mostrar_mensaje("Vendedor no encontrado. \nVerifique la cedula ingresada.")
+    
+    
+     #______________________________________________________________________________________________
     def modificar_vendedor(self):
         cedula = self.vista.solicitar_cedula()
         vendedor = self.registro.buscar_vendedor(cedula)
@@ -110,3 +133,16 @@ class VendedorControlador:
 #======================================================================
 #===============================REPORTES===============================
 #======================================================================
+        
+    def estadisticas_por_categoria(self):
+        cantidad_junior = self.registro.cantidad_por_categoria("Junior")
+        ventas_junior = self.registro.ventas_por_categoria("Junior")
+
+        cantidad_semisenior = self.registro.cantidad_por_categoria("SemiSenior")
+        ventas_semisenior = self.registro.ventas_por_categoria("SemiSenior")
+
+        cantidad_senior = self.registro.cantidad_por_categoria("Senior")
+        ventas_senior = self.registro.ventas_por_categoria("Senior")
+
+        self.vista.estadisticas_por_categoria(cantidad_junior,ventas_junior,cantidad_semisenior,ventas_semisenior,cantidad_senior,ventas_senior)
+    

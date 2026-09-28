@@ -112,7 +112,7 @@ class VendedorVista:
     def mostrar_mensaje(self, mensaje):
         print(mensaje)
      
-    #muestra la informacion de (consultar)vendedor y listas asociadas
+    #muestra la informacion de (consultar) un vendedor y listas asociadas
     def mostrar_info_vendedor(self, vendedor, ventas_mes, horas_extra, dias_ausencia, bono_especial, planilla_procesada, salario_neto):
         print()
         print("======== INFORMACION DEL VENDEDOR ========")
@@ -188,8 +188,45 @@ class VendedorVista:
 
         print("=====================================================")
 
+  #_____________________________________________________
+    #se agrego un metodo para (Reporte general de vendedores) 
+    def mostrar_reporte_general(self, vendedor, ventas_mes, porcentaje_cumplimiento):
+        print()
+        print("========== REPORTE GENERAL DE VENDEDORES ==========")
+    
+        print("Cedula:", vendedor.get_cedula())
+        print("Nombre:", vendedor.get_nombre())
+        print("Categoria:", vendedor.get_categoria())
+        print("Meta mensual:", vendedor.get_meta_mensual())
+        print("Ventas del mes:", ventas_mes)
+        print("Porcentaje de cumplimiento:", porcentaje_cumplimiento)
+    
+        print("===================================================")
+    #______________________________________________________________________
+     #se  agrego un metodo para mostrar las estadisticas por categoria
         
+    def mostrar_estadisticas_categoria(self, cantidad_junior, ventas_junior,
+                                   cantidad_semisenior, ventas_semisenior,
+                                   cantidad_senior, ventas_senior):
         
+        print()
+        print("========== ESTADISTICAS POR CATEGORIA ==========")
+    
+        print("Junior:")
+        print("Cantidad de vendedores:", cantidad_junior)
+        print("Total de ventas:", ventas_junior)
+    
+        print()
+        print("SemiSenior:")
+        print("Cantidad de vendedores:", cantidad_semisenior)
+        print("Total de ventas:", ventas_semisenior)
+    
+        print()
+        print("Senior:")
+        print("Cantidad de vendedores:", cantidad_senior)
+        print("Total de ventas:", ventas_senior)
+    
+        print("================================================")
         
         
     
