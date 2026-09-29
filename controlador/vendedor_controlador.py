@@ -50,26 +50,11 @@ class VendedorControlador:
         salario_base = self.vista.solicitar_salario_base()
         meta_mensual = self.vista.solicitar_meta_mensual()
 
-        vendedor = self.registro.registrar_vendedor(cedula,nombre,categoria,salario_base,meta_mensual)
-        
-        if (vendedor is not None):
+        if (self.registro.crear_vendedor(cedula, nombre, categoria, salario_base, meta_mensual) == "CREADO"):
             self.vista.mostrar_mensaje("Vendedor registrado exitosamente.")
-            
         else:
-            self.vista.mostrar_mensaje("Error al registrar el vendedor.")
-    
-    """def consultar_vendedor(self):
-        cedula = self.vista.solicitar_cedula()
-        vendedor = self.registro.buscar_vendedor(cedula)      #solo imprime vendedor y no las listas asociadas (6.2 dice que tiene que ir la info de listas)
-                                                              #busca el vendedor por un metodo de buscar_vendedor, pero en registro el metodo es buscar_por cedula 
+            self.vista.mostrar_mensaje("Cédula ya registrada.")
 
-        if (vendedor is not None):
-            self.vista.mostrar_datos_vendedor(vendedor)
-
-        else:
-            self.vista.mostrar_mensaje("Vendedor no encontrado. Verifique la cedula ingresada.")"""
-    
-                
     def consultar_vendedor(self):
         cedula = self.vista.solicitar_cedula()
         vendedor = self.registro.buscar_por_cedula(cedula)
@@ -128,12 +113,65 @@ class VendedorControlador:
 
             self.vista.mostrar_mensaje("====================================")
 
+    def registrar_informacion_mes(self):
+        cedula = self.vista.solicitar_cedula()
+        vendedor = self.registro.buscar_vendedor(cedula)
+
+        if (vendedor is not None):
+            ventas_mes = self.vista.solicitar_ventas_mes()
+            horas_extra = self.vista.solicitar_horas_extra()
+            dias_ausencia = self.vista.solicitar_dias_ausencia()
+            bono_especial = self.vista.solicitar_bono_especial()
+
+            self.registro.registrar_informacion_mes(cedula, ventas_mes, horas_extra, dias_ausencia, bono_especial)
+            self.vista.mostrar_mensaje("Información del mes registrada exitosamente.")
+
+        else:
+            self.vista.mostrar_mensaje("Vendedor no encontrado. Verifique la cedula ingresada.")
+
     def regresar_menu_principal(self):
         self.inicio()
 #======================================================================
 #===============================REPORTES===============================
 #======================================================================
-        
+    
+    def reporte_general_vendedores(self):
+        vendedores = self.registro.listar_vendedores()
+
+        if (vendedores is not None):
+            for vendedor in vendedores:
+                posicion = self.registro.buscar_posicion(vendedor.get_cedula())
+                ventas_mes = self.registro.get_ventas_mes(posicion)
+                porcentaje_cumplimiento = self.registro.obtener_porcentaje_cumplimiento(vendedor.get_cedula())
+
+                self.vista.mostrar_reporte_general(vendedor, ventas_mes, porcentaje_cumplimiento)
+
+        else:
+            self.vista.mostrar_mensaje("No hay vendedores registrados.")
+
+
+    def vendedor_mayor_ventas(self):
+        vendedor = self.registro.obtener_vendedor_mayor_ventas()
+
+        if (vendedor is not None):
+            posicion = self.registro.buscar_posicion(vendedor.get_cedula())
+            ventas_mes = self.registro.get_ventas_mes(posicion)
+
+            self.vista.mostrar_mayor_venta(vendedor, ventas_mes)
+
+        else:
+            self.vista.mostrar_mensaje("No hay vendedores registrados.")
+
+    def mayor_cumplimiento_meta(self):
+        vendedor = self.registro.vendedor_mayor_cumplimiento()
+        if vendedor is not None:
+            posicion = self.registro.buscar_posicion(vendedor.get_cedula())
+            porcentaje_cumplimiento = self.registro.obtener_porcentaje_cumplimiento(vendedor.get_cedula())
+
+            self.vista.mostrar_mayor_porcentaje_cumplimiento(vendedor, porcentaje_cumplimiento)
+        else:
+            self.vista.mostrar_mensaje("No hay vendedores registrados.")
+
     def estadisticas_por_categoria(self):
         cantidad_junior = self.registro.cantidad_por_categoria("Junior")
         ventas_junior = self.registro.ventas_por_categoria("Junior")

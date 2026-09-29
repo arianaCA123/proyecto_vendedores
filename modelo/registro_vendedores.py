@@ -221,6 +221,17 @@ class RegistroVendedores:
     # REPORTES Y ESTADÍSTICAS
     # ==================================================
 
+    # se crea un método para obtener el porcentaje de cumplimiento de cada vendedor
+    # para que el controlador no se relacione directamente con el modelo del vendedor
+    def obtener_porcentaje_cumplimiento(self, cedula):
+        vendedor = self.buscar_por_cedula(cedula)
+        if vendedor is not None:
+            posicion = self.buscar_posicion(cedula)
+            ventas_mes = self.__ventas_mes[posicion]
+            porcentaje_cumplimiento = vendedor.calcular_porcentaje_cumplimiento(ventas_mes)
+            return porcentaje_cumplimiento
+        return None
+
     # Vendedor con mayores ventas del mes
     def vendedor_mayores_ventas(self):
         mayor = None

@@ -202,6 +202,31 @@ class VendedorVista:
         print("Porcentaje de cumplimiento:", porcentaje_cumplimiento)
     
         print("===================================================")
+
+  #_____________________________________________________
+    #se agrego un metodo para (Mostrar al vendedor con mayores ventas en el mes) 
+    def mostrar_mayor_venta(self, vendedor, ventas_mes):
+        print()
+        print("========== VENDEDOR CON MAYOR VENTA ==========")
+        
+        print("Cedula:", vendedor.get_cedula())
+        print("Nombre:", vendedor.get_nombre())
+        print("Ventas del mes:", ventas_mes)
+        
+        print("===================================================")
+
+  #_____________________________________________________
+    #se agrego un metodo para (Mostrar al vendedor con mayor porcentaje de cumplimiento de la meta) 
+    def mostrar_mayor_porcentaje_cumplimiento(self, vendedor, porcentaje_cumplimiento):
+        print()
+        print("========== VENDEDOR CON MAYOR PORCENTAJE DE CUMPLIMIENTO ==========")
+        
+        print("Cedula:", vendedor.get_cedula())
+        print("Nombre:", vendedor.get_nombre())
+        print("Porcentaje de cumplimiento:", porcentaje_cumplimiento)
+        
+        print("===================================================")
+
     #______________________________________________________________________
      #se  agrego un metodo para mostrar las estadisticas por categoria
         
