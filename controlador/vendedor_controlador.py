@@ -5,20 +5,20 @@ class VendedorControlador:
 
     def inicio(self):
         opcion = self.vista.mostrar_menu()
-
+         #tiene que crearse un ciclo while para que permita regresal al menu principal
         match opcion:
             case "1":
-                pass
+                pass #submenu vendedores
             case "2":
-                pass
+                pass #Registrar / actualizar datos del mes
             case "3":
-                pass
+                pass #procesar la planilla de un vendedor
             case "4":
-                pass
+                pass #procesar la planilla de todos los vendedores
             case "5":
-                pass
+                pass #submenu de reportes 
             case "6":
-                pass
+                pass  #nuevo mes 
             case "7":
                 self.vista.mostrar_mensaje("Saliendo del programa...")
             case _:
@@ -49,6 +49,13 @@ class VendedorControlador:
         categoria = self.vista.solicitar_categoria()
         salario_base = self.vista.solicitar_salario_base()
         meta_mensual = self.vista.solicitar_meta_mensual()
+        
+        if categoria == 1:
+            categoria = "Junior"
+        elif categoria == 2:
+            categoria = "SemiSenior"
+        elif categoria == 3:
+            categoria = "Senior"
 
         if (self.registro.crear_vendedor(cedula, nombre, categoria, salario_base, meta_mensual) == "CREADO"):
             self.vista.mostrar_mensaje("Vendedor registrado exitosamente.")
@@ -78,14 +85,21 @@ class VendedorControlador:
      #______________________________________________________________________________________________
     def modificar_vendedor(self):
         cedula = self.vista.solicitar_cedula()
-        vendedor = self.registro.buscar_vendedor(cedula)
+        vendedor = self.registro.buscar_por_cedula(cedula)
 
         if (vendedor is not None):
             nuevo_nombre = self.vista.solicitar_nuevo_nombre()
             nueva_categoria = self.vista.solicitar_nueva_categoria()
             nuevo_salario_base = self.vista.solicitar_nuevo_salario_base()
             nueva_meta_mensual = self.vista.solicitar_nueva_meta_mensual()
-
+            
+            if nueva_categoria == 1:
+                nueva_categoria = "Junior"
+            elif nueva_categoria == 2:
+                nueva_categoria = "SemiSenior"
+            elif nueva_categoria == 3:
+                nueva_categoria = "Senior"
+                     
             self.registro.modificar_vendedor(cedula, nuevo_nombre, nueva_categoria, nuevo_salario_base, nueva_meta_mensual)
             self.vista.mostrar_mensaje("Vendedor modificado exitosamente.")
 
@@ -103,7 +117,7 @@ class VendedorControlador:
         else:
             self.vista.mostrar_mensaje("Vendedor no encontrado. Verifique la cedula ingresada")
 
-    def listar_vendedor(self):
+    def listar_vendedores(self):
         vendedores = self.registro.listar_vendedores()
 
         if (vendedores is not None):
@@ -171,7 +185,30 @@ class VendedorControlador:
             self.vista.mostrar_mayor_porcentaje_cumplimiento(vendedor, porcentaje_cumplimiento)
         else:
             self.vista.mostrar_mensaje("No hay vendedores registrados.")
+            
+    def reporte_total_promedio_ventas(self):
+        total = self.registro.total_ventas()
+        promedio = self.registro.promedio_ventas()
+        
+        self.vista.mostrar_total_promedio_ventas(total, promedio)         
+    
+    def reporte_vendedores_bajo_meta(self):
+        vendedores = self.registro.vendedores_bajo_meta()
+        cantidad = len(vendedores)
 
+        self.vista.mostrar_vendedores_bajo_meta(vendedores, cantidad)
+
+    def reporte_total_comisiones(self):
+        total = self.registro.total_comisiones_mes()
+        
+        self.vista.mostrar_total_comisiones(total)
+
+    def reporte_total_planilla(self):
+        total = self.registro.total_planilla()
+
+        self.vista.mostrar_total_planilla(total)   
+    
+    
     def estadisticas_por_categoria(self):
         cantidad_junior = self.registro.cantidad_por_categoria("Junior")
         ventas_junior = self.registro.ventas_por_categoria("Junior")

@@ -102,7 +102,7 @@ class RegistroVendedores:
     # MODIFICAR VENDEDOR
     # ==================================================
 
-    def actualizar_vendedor(self, cedula, nuevo_nombre, nueva_categoria,
+    def modificar_vendedor(self, cedula, nuevo_nombre, nueva_categoria,
                             nuevo_salario_base, nueva_meta_mensual):
         vendedor = self.buscar_por_cedula(cedula)
 

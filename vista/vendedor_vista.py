@@ -189,7 +189,7 @@ class VendedorVista:
         print("=====================================================")
 
   #_____________________________________________________
-    #se agrego un metodo para (Reporte general de vendedores) 
+    #========================REPORTES Y ESTADISTICAS============================
     def mostrar_reporte_general(self, vendedor, ventas_mes, porcentaje_cumplimiento):
         print()
         print("========== REPORTE GENERAL DE VENDEDORES ==========")
@@ -228,7 +228,39 @@ class VendedorVista:
         print("===================================================")
 
     #______________________________________________________________________
-     #se  agrego un metodo para mostrar las estadisticas por categoria
+    def mostrar_total_promedio_ventas(self, total, promedio):   #total y promedio
+        print()
+        print("===== TOTAL Y PROMEDIO DE VENTAS =====")
+        print("Total de ventas del mes:", total)
+        print("Promedio de ventas del mes:", promedio)
+        print("======================================")       
+        
+    def mostrar_vendedores_bajo_meta(self, vendedores, cantidad):
+        print()
+        print("===== VENDEDORES QUE NO ALCANZARON LA META =====")
+        
+        for vendedor in vendedores:
+            print(vendedor)
+
+        print()
+        print("Cantidad de vendedores:", cantidad)
+        print("=================================================")        
+        
+        
+    def mostrar_total_comisiones(self, total):
+        print()
+        print("===== TOTAL DE COMISIONES =====")
+        print("Total de comisiones:", total)
+        print("===============================")
+    
+    def mostrar_total_planilla(self, total):
+        print()
+        print("===== TOTAL DE PLANILLA =====")
+        print("Total de planilla:", total)
+        print("=============================")   
+    
+        
+    #=================ESTADISTICAS POR CATEGORIA====================
         
     def mostrar_estadisticas_categoria(self, cantidad_junior, ventas_junior,
                                    cantidad_semisenior, ventas_semisenior,
