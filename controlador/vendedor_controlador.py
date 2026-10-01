@@ -4,13 +4,14 @@ class VendedorControlador:
         self.vista = vista
 
     def inicio(self):
+        opcion = ""
         while opcion != "7":
             opcion = self.vista.mostrar_menu() 
 
             match opcion:
                 case "1":
                     while opcion != "6":
-                        opcion = self.vista.mostrar_menu_gestion_vendedores()
+                        opcion = self.vista.mostrar_submenu_vendedores()
 
                         match opcion:
                             case "1":
@@ -42,7 +43,7 @@ class VendedorControlador:
                     self.procesar_planilla_todos_vendedores()
                 case "5":
                     while opcion != "9":
-                        opcion = self.vista.mostrar_menu_reportes()
+                        opcion = self.vista.mostrar_submenu_reportes()
 
                         match opcion:
                             case "1":
@@ -97,7 +98,7 @@ class VendedorControlador:
 
     def registar_datos_mes(self):
         cedula = self.vista.solicitar_cedula()
-        vendedor = self.registro.buscar_vendedor(cedula)
+        vendedor = self.registro.buscar_por_cedula(cedula)
 
         if (vendedor is not None):
             ventas_mes = self.vista.solicitar_ventas_mes()
@@ -114,15 +115,15 @@ class VendedorControlador:
     def procesar_planilla_vendedor(self):
         cedula = self.vista.solicitar_cedula()
 
-        if (self.registro.procesar_plantilla(cedula) == "PROCESADA"):
+        if (self.registro.procesar_planilla(cedula) == "PROCESADA"):
             self.vista.mostrar_mensaje("Planilla procesada exitosamente para el vendedor.")
-        elif (self.registro.procesar_plantilla(cedula) == "NO_EXISTE"):
+        elif (self.registro.procesar_planilla(cedula) == "NO_EXISTE"):
             self.vista.mostrar_mensaje("Vendedor no encontrado. Verifique la cedula ingresada.")
         else:
             self.vista.mostrar_mensaje("La planilla ya fue procesada para este vendedor.")
 
     def procesar_planilla_todos_vendedores(self):
-        if (self.registro.procesar_plantilla_todos() != 0):
+        if (self.registro.procesar_todos() != 0):
             self.vista.mostrar_mensaje("Planilla procesada exitosamente para todos los vendedores.")
         else:
             self.vista.mostrar_mensaje("No hay vendedores registrados o ya se procesó la planilla para todos.")
@@ -202,7 +203,7 @@ class VendedorControlador:
         
     def eliminar_vendedor(self):
         cedula = self.vista.solicitar_cedula()
-        vendedor = self.registro.buscar_vendedor(cedula)
+        vendedor = self.registro.buscar_por_cedula(cedula)
 
         if (vendedor is not None):
             self.registro.eliminar_vendedor(cedula)
@@ -223,7 +224,7 @@ class VendedorControlador:
 
     def registrar_informacion_mes(self):
         cedula = self.vista.solicitar_cedula()
-        vendedor = self.registro.buscar_vendedor(cedula)
+        vendedor = self.registro.buscar_por_cedula(cedula)
 
         if (vendedor is not None):
             ventas_mes = self.vista.solicitar_ventas_mes()
@@ -259,7 +260,7 @@ class VendedorControlador:
 
 
     def vendedor_mayor_ventas(self):
-        vendedor = self.registro.obtener_vendedor_mayor_ventas()
+        vendedor = self.registro.vendedor_mayores_ventas()
 
         if (vendedor is not None):
             posicion = self.registro.buscar_posicion(vendedor.get_cedula())
@@ -295,8 +296,12 @@ class VendedorControlador:
         cantidad = len(vendedores)
         if (vendedores is not None) and (cantidad > 0):
             self.vista.mostrar_vendedores_bajo_meta(vendedores, cantidad)
-        else:
+
+        elif (vendedores is None):
             self.vista.mostrar_mensaje("No hay vendedores registrados.")
+
+        else:
+            self.vista.mostrar_mensaje("Todos los vendedores han cumplido su meta mensual.")
 
     def reporte_total_comisiones(self):
         total = self.registro.total_comisiones_mes()
@@ -323,7 +328,7 @@ class VendedorControlador:
         ventas_senior = self.registro.ventas_por_categoria("Senior")
 
         if (cantidad_junior is not None) and (ventas_junior is not None) and (cantidad_semisenior is not None) and (ventas_semisenior is not None) and (cantidad_senior is not None) and (ventas_senior is not None):
-            self.vista.estadisticas_por_categoria(cantidad_junior,ventas_junior,cantidad_semisenior,ventas_semisenior,cantidad_senior,ventas_senior)
+            self.vista.mostrar_estadisticas_categoria(cantidad_junior,ventas_junior,cantidad_semisenior,ventas_semisenior,cantidad_senior,ventas_senior)
         else:
             self.vista.mostrar_mensaje("No hay datos disponibles para mostrar.")
     
