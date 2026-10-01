@@ -162,6 +162,9 @@ class RegistroVendedores:
 
     def iniciar_nuevo_mes(self):
         posicion = 0
+        if self.esta_vacio():
+            return "Vacio"
+        
         for vendedor in self.__vendedores:
             self.__ventas_mes[posicion] = 0
             self.__horas_extra[posicion] = 0

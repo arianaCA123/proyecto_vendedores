@@ -4,25 +4,81 @@ class VendedorControlador:
         self.vista = vista
 
     def inicio(self):
-        opcion = self.vista.mostrar_menu()
-         #tiene que crearse un ciclo while para que permita regresal al menu principal
-        match opcion:
-            case "1":
-                pass #submenu vendedores
-            case "2":
-                pass #Registrar / actualizar datos del mes
-            case "3":
-                pass #procesar la planilla de un vendedor
-            case "4":
-                pass #procesar la planilla de todos los vendedores
-            case "5":
-                pass #submenu de reportes 
-            case "6":
-                pass  #nuevo mes 
-            case "7":
-                self.vista.mostrar_mensaje("Saliendo del programa...")
-            case _:
-                self.vista.mostrar_mensaje("Opción inválida. Por favor, seleccione una opción válida.")
+        while opcion != "7":
+            opcion = self.vista.mostrar_menu() 
+
+            match opcion:
+                case "1":
+                    while opcion != "6":
+                        opcion = self.vista.mostrar_menu_gestion_vendedores()
+
+                        match opcion:
+                            case "1":
+                                self.registrar_vendedor()
+
+                            case "2":
+                                self.consultar_vendedor()
+
+                            case "3":
+                                self.modificar_vendedor()  
+
+                            case "4":
+                                self.eliminar_vendedor()
+
+                            case "5":
+                                self.listar_vendedores()
+
+                            case "6":
+                                self.regresar_menu_principal()
+
+                            case _:
+                                self.vista.mostrar_mensaje("Opción inválida. Por favor, seleccione una opción válida.")
+                case "2":
+                    self.registar_datos_mes()
+
+                case "3":
+                    self.procesar_planilla_vendedor()
+                case "4":
+                    self.procesar_planilla_todos_vendedores()
+                case "5":
+                    while opcion != "9":
+                        opcion = self.vista.mostrar_menu_reportes()
+
+                        match opcion:
+                            case "1":
+                                self.reporte_general_vendedores()
+
+                            case "2":
+                                self.vendedor_mayor_ventas()
+
+                            case "3":
+                                self.mayor_cumplimiento_meta()
+
+                            case "4":
+                                self.reporte_total_promedio_ventas()
+
+                            case "5":
+                                self.reporte_vendedores_bajo_meta()
+
+                            case "6":
+                                self.reporte_total_comisiones()
+
+                            case "7":
+                                self.reporte_total_planilla()
+
+                            case "8":
+                                self.estadisticas_por_categoria()
+
+                            case "9":
+                                self.regresar_menu_principal()
+                            case _:
+                                self.vista.mostrar_mensaje("Opción inválida. Por favor, seleccione una opción válida.")
+                case "6":
+                    self.iniciar_nuevo_mes()
+                case "7":
+                    self.vista.mostrar_mensaje("Saliendo del programa...")
+                case _:
+                    self.vista.mostrar_mensaje("Opción inválida. Por favor, seleccione una opción válida.")
 
         '''
         SISTEMA DE GESTIÓN DE VENDEDORES 
@@ -38,6 +94,44 @@ class VendedorControlador:
 #======================================================================
 #============================MENU PRINCIPAL============================
 #======================================================================
+
+    def registar_datos_mes(self):
+        cedula = self.vista.solicitar_cedula()
+        vendedor = self.registro.buscar_vendedor(cedula)
+
+        if (vendedor is not None):
+            ventas_mes = self.vista.solicitar_ventas_mes()
+            horas_extra = self.vista.solicitar_horas_extra()
+            dias_ausencia = self.vista.solicitar_dias_ausencia()
+            bono = self.vista.solicitar_bono_especial()
+
+            self.registro.registrar_datos_mes(cedula, ventas_mes, horas_extra, dias_ausencia, bono)
+            self.vista.mostrar_mensaje("Información del mes registrada exitosamente.")
+
+        else:
+            self.vista.mostrar_mensaje("Vendedor no encontrado. Verifique la cedula ingresada.")
+
+    def procesar_planilla_vendedor(self):
+        cedula = self.vista.solicitar_cedula()
+
+        if (self.registro.procesar_plantilla(cedula) == "PROCESADA"):
+            self.vista.mostrar_mensaje("Planilla procesada exitosamente para el vendedor.")
+        elif (self.registro.procesar_plantilla(cedula) == "NO_EXISTE"):
+            self.vista.mostrar_mensaje("Vendedor no encontrado. Verifique la cedula ingresada.")
+        else:
+            self.vista.mostrar_mensaje("La planilla ya fue procesada para este vendedor.")
+
+    def procesar_planilla_todos_vendedores(self):
+        if (self.registro.procesar_plantilla_todos() != 0):
+            self.vista.mostrar_mensaje("Planilla procesada exitosamente para todos los vendedores.")
+        else:
+            self.vista.mostrar_mensaje("No hay vendedores registrados o ya se procesó la planilla para todos.")
+
+    def iniciar_nuevo_mes(self):
+        if (self.registro.iniciar_nuevo_mes() == "Vacio"):
+            self.vista.mostrar_mensaje("No hay vendedores registrados.")
+        else:
+            self.vista.mostrar_mensaje("Se ha iniciado un nuevo mes.")
 
 #======================================================================
 #========================GESTIÓN DE VENDEDORES=========================
@@ -189,26 +283,35 @@ class VendedorControlador:
     def reporte_total_promedio_ventas(self):
         total = self.registro.total_ventas()
         promedio = self.registro.promedio_ventas()
-        
-        self.vista.mostrar_total_promedio_ventas(total, promedio)         
-    
+        if (total is not None) and (promedio is not None):
+
+            self.vista.mostrar_total_promedio_ventas(total, promedio)
+
+        else:
+            self.vista.mostrar_mensaje("No hay datos disponibles para mostrar.")
+
     def reporte_vendedores_bajo_meta(self):
         vendedores = self.registro.vendedores_bajo_meta()
         cantidad = len(vendedores)
-
-        self.vista.mostrar_vendedores_bajo_meta(vendedores, cantidad)
+        if (vendedores is not None) and (cantidad > 0):
+            self.vista.mostrar_vendedores_bajo_meta(vendedores, cantidad)
+        else:
+            self.vista.mostrar_mensaje("No hay vendedores registrados.")
 
     def reporte_total_comisiones(self):
         total = self.registro.total_comisiones_mes()
-        
-        self.vista.mostrar_total_comisiones(total)
+        if total is not None:
+            self.vista.mostrar_total_comisiones(total)
+        else:
+            self.vista.mostrar_mensaje("No hay datos disponibles para mostrar.")
 
     def reporte_total_planilla(self):
         total = self.registro.total_planilla()
+        if total is not None:
+            self.vista.mostrar_total_planilla(total)
+        else:
+            self.vista.mostrar_mensaje("No hay datos disponibles para mostrar.")
 
-        self.vista.mostrar_total_planilla(total)   
-    
-    
     def estadisticas_por_categoria(self):
         cantidad_junior = self.registro.cantidad_por_categoria("Junior")
         ventas_junior = self.registro.ventas_por_categoria("Junior")
@@ -219,5 +322,8 @@ class VendedorControlador:
         cantidad_senior = self.registro.cantidad_por_categoria("Senior")
         ventas_senior = self.registro.ventas_por_categoria("Senior")
 
-        self.vista.estadisticas_por_categoria(cantidad_junior,ventas_junior,cantidad_semisenior,ventas_semisenior,cantidad_senior,ventas_senior)
+        if (cantidad_junior is not None) and (ventas_junior is not None) and (cantidad_semisenior is not None) and (ventas_semisenior is not None) and (cantidad_senior is not None) and (ventas_senior is not None):
+            self.vista.estadisticas_por_categoria(cantidad_junior,ventas_junior,cantidad_semisenior,ventas_semisenior,cantidad_senior,ventas_senior)
+        else:
+            self.vista.mostrar_mensaje("No hay datos disponibles para mostrar.")
     
