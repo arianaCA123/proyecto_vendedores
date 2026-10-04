@@ -20,6 +20,8 @@ class RegistroVendedores:
         self.__salarios_netos_mes = []    # salario neto calculado
         self.__comisiones_mes = []        # comisión final (para el reporte de comisiones)
 
+       
+
     # ==================================================
     # BÚSQUEDAS
     # ==================================================
@@ -135,6 +137,8 @@ class RegistroVendedores:
         self.__planilla_procesada.pop(posicion)
         self.__salarios_netos_mes.pop(posicion)
         self.__comisiones_mes.pop(posicion)
+
+        self.__Validez = False #Se reinicia la variable condicional para que no se pueda modificar un vendedor hasta crear un nuevo mes
         return True
 
     # ==================================================
@@ -320,3 +324,20 @@ class RegistroVendedores:
                 total = total + self.__ventas_mes[posicion]
             posicion = posicion + 1
         return total
+
+
+    def validez(self):
+        validez = False  #Esta es una metodo condicional ,para que al crear una planilla 
+                        #no se pueda modificar sobre un vendedor hasta crear un nuevo mes
+
+        contador = 0
+        for vendedor in self.__vendedores:
+            if self.__planilla_procesada[self.buscar_posicion(vendedor.get_cedula())] == True:
+                contador += 1
+
+        if contador == len(self.__vendedores):
+            validez = True
+        else:
+            validez = False
+
+        return validez

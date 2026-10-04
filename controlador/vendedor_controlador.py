@@ -30,8 +30,7 @@ class VendedorControlador:
                                 self.listar_vendedores()
 
                             case "6":
-                                self.regresar_menu_principal()
-
+                                pass
                             case _:
                                 self.vista.mostrar_mensaje("Opción inválida. Por favor, seleccione una opción válida.")
                 case "2":
@@ -71,7 +70,7 @@ class VendedorControlador:
                                 self.estadisticas_por_categoria()
 
                             case "9":
-                                self.regresar_menu_principal()
+                                pass
                             case _:
                                 self.vista.mostrar_mensaje("Opción inválida. Por favor, seleccione una opción válida.")
                 case "6":
@@ -97,6 +96,11 @@ class VendedorControlador:
 #======================================================================
 
     def registar_datos_mes(self):
+        if (self.registro.validez()):
+            self.vista.mostrar_mensaje("No se puede registrar información del mes. \nSe debe iniciar un nuevo mes primero.")
+            return
+
+        
         cedula = self.vista.solicitar_cedula()
         vendedor = self.registro.buscar_por_cedula(cedula)
 
@@ -238,8 +242,7 @@ class VendedorControlador:
         else:
             self.vista.mostrar_mensaje("Vendedor no encontrado. Verifique la cedula ingresada.")
 
-    def regresar_menu_principal(self):
-        self.inicio()
+    
 #======================================================================
 #===============================REPORTES===============================
 #======================================================================
