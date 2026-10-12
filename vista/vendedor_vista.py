@@ -51,13 +51,25 @@ class VendedorVista:
         print("1) Junior")
         print("2) SemiSenior" )
         print("3) Senior")
-        return int(input("Seleccione una Categoria: "))
-    
+        categoria = int(input("Seleccione una Categoria: "))
+        while categoria < 1 or categoria > 3:      #solo se permiten las opciones 1, 2 o 3
+            print("Categoria invalida. Debe ser 1, 2 o 3.")
+            categoria = int(input("Seleccione una Categoria: "))
+        return categoria
+
     def solicitar_salario_base(self):
-        return float(input("Digite el salario base: "))
+        salario = float(input("Digite el salario base: "))
+        while salario <= 0:
+            print("El salario base debe ser mayor que cero.")
+            salario = float(input("Digite el salario base: "))
+        return salario
 
     def solicitar_meta_mensual(self):
-        return float(input("Digite la meta mensual: "))
+        meta = float(input("Digite la meta mensual: "))
+        while meta <= 0:                           #evita la division entre cero en el porcentaje
+            print("La meta mensual debe ser mayor que cero.")
+            meta = float(input("Digite la meta mensual: "))
+        return meta
 
     
     #______________________________________________________
@@ -70,13 +82,25 @@ class VendedorVista:
         print("1) Junior")
         print("2) SemiSenior")
         print("3) Senior")
-        return int(input("Seleccione la nueva categoria: "))
+        categoria = int(input("Seleccione la nueva categoria: "))
+        while categoria < 1 or categoria > 3:
+            print("Categoria invalida. Debe ser 1, 2 o 3.")
+            categoria = int(input("Seleccione la nueva categoria: "))
+        return categoria
 
     def solicitar_nuevo_salario_base(self):
-        return float(input("Digite el nuevo salario base: "))
+        salario = float(input("Digite el nuevo salario base: "))
+        while salario <= 0:
+            print("El salario base debe ser mayor que cero.")
+            salario = float(input("Digite el nuevo salario base: "))
+        return salario
 
     def solicitar_nueva_meta_mensual(self):
-        return float(input("Digite la nueva meta mensual: "))
+        meta = float(input("Digite la nueva meta mensual: "))
+        while meta <= 0:
+            print("La meta mensual debe ser mayor que cero.")
+            meta = float(input("Digite la nueva meta mensual: "))
+        return meta
 
     
     #__________________________________________________________
@@ -86,16 +110,38 @@ class VendedorVista:
     #estos se utilizan cuando el usuario registra o modifica la información del mes
     
     def solicitar_ventas_mes(self):
-        return float(input("Digite las ventas del mes: "))
+        ventas = float(input("Digite las ventas del mes: "))
+        while ventas < 0:
+            print("Las ventas no pueden ser negativas.")
+            ventas = float(input("Digite las ventas del mes: "))
+        return ventas
 
     def solicitar_horas_extra(self):
-        return int(input("Digite las horas extra: "))
+        horas = int(input("Digite las horas extra: "))
+        while horas < 0:
+            print("Las horas extra no pueden ser negativas.")
+            horas = int(input("Digite las horas extra: "))
+        return horas
 
     def solicitar_dias_ausencia(self):
-        return int(input("Digite los dias de ausencia: "))
+        dias = int(input("Digite los dias de ausencia: "))
+        while dias < 0 or dias > 30:
+            print("Los dias de ausencia deben estar entre 0 y 30.")
+            dias = int(input("Digite los dias de ausencia: "))
+        return dias
 
     def solicitar_bono_especial(self):
-        return float(input("Digite el bono especial: "))
+        bono = float(input("Digite el bono especial: "))
+        while bono < 0:
+            print("El bono especial no puede ser negativo.")
+            bono = float(input("Digite el bono especial: "))
+        return bono
+
+    #pide confirmacion antes de iniciar un nuevo mes
+    def confirmar_nuevo_mes(self):
+        print("Se reiniciaran los datos del mes de todos los vendedores.")
+        respuesta = input("¿Desea continuar? (S/N): ")
+        return respuesta == "S" or respuesta == "s"
    
    #________________________________________________________
     #mostrar informacion
@@ -135,7 +181,7 @@ class VendedorVista:
         
 
         if planilla_procesada:
-            print("Salario neto:", salario_neto)
+            print("Salario neto:", round(salario_neto, 2))
         
         print("=========================================")
     
@@ -159,32 +205,32 @@ class VendedorVista:
         #ventas, meta y porcentaje
         print("Ventas realizadas: ", ventas_mes)
         print("Meta mensual: ",vendedor.get_meta_mensual())
-        print("Porcentaje de cumplimiento: ", porcentaje_cumplimiento)
-        
+        print("Porcentaje de cumplimiento: ", round(porcentaje_cumplimiento, 2), "%")
+
         #comision inicial, ajuste por categoria,comision final
-        print("Comisión inicial: ", comision_inicial)
-        print("Ajuste por categoría: ", ajuste_categoria, " % ")
-        print("Comisión final: ", comision_final)
-        
+        print("Comisión inicial: ", round(comision_inicial, 2))
+        print("Ajuste por categoría: ", ajuste_categoria, "%")
+        print("Comisión final: ", round(comision_final, 2))
+
         #horas extra y pago
         print("Horas extra: ", horas_extra)
-        print("Pago por horas extra: ", pago_horas_extra)
-        
+        print("Pago por horas extra: ", round(pago_horas_extra, 2))
+
          # bonos
         print("Bono por rendimiento:", bono_rendimiento)
         print("Bono especial:", bono_especial)
-        
-        
+
+
         # total de ingresos
-        print("Total de ingresos:", total_ingresos)
+        print("Total de ingresos:", round(total_ingresos, 2))
 
         # deducciones
-        print("Deducción por ausencias:", deduccion_ausencias)
-        print("Deducción obligatoria:", deduccion_obligatoria)
-        print("Impuesto académico:", impuesto_academico)
+        print("Deducción por ausencias:", round(deduccion_ausencias, 2))
+        print("Deducción obligatoria:", round(deduccion_obligatoria, 2))
+        print("Impuesto académico:", round(impuesto_academico, 2))
 
         # salario neto
-        print("Salario neto:", salario_neto)
+        print("Salario neto:", round(salario_neto, 2))
 
         print("=====================================================")
 
@@ -199,8 +245,8 @@ class VendedorVista:
         print("Categoria:", vendedor.get_categoria())
         print("Meta mensual:", vendedor.get_meta_mensual())
         print("Ventas del mes:", ventas_mes)
-        print("Porcentaje de cumplimiento:", porcentaje_cumplimiento)
-    
+        print("Porcentaje de cumplimiento:", round(porcentaje_cumplimiento, 2), "%")
+
         print("===================================================")
 
   #_____________________________________________________
@@ -223,8 +269,8 @@ class VendedorVista:
         
         print("Cedula:", vendedor.get_cedula())
         print("Nombre:", vendedor.get_nombre())
-        print("Porcentaje de cumplimiento:", porcentaje_cumplimiento)
-        
+        print("Porcentaje de cumplimiento:", round(porcentaje_cumplimiento, 2), "%")
+
         print("===================================================")
 
     #______________________________________________________________________
@@ -232,7 +278,7 @@ class VendedorVista:
         print()
         print("===== TOTAL Y PROMEDIO DE VENTAS =====")
         print("Total de ventas del mes:", total)
-        print("Promedio de ventas del mes:", promedio)
+        print("Promedio de ventas del mes:", round(promedio, 2))
         print("======================================")       
         
     def mostrar_vendedores_bajo_meta(self, vendedores, cantidad):
@@ -250,13 +296,13 @@ class VendedorVista:
     def mostrar_total_comisiones(self, total):
         print()
         print("===== TOTAL DE COMISIONES =====")
-        print("Total de comisiones:", total)
+        print("Total de comisiones:", round(total, 2))
         print("===============================")
-    
+
     def mostrar_total_planilla(self, total):
         print()
         print("===== TOTAL DE PLANILLA =====")
-        print("Total de planilla:", total)
+        print("Total de planilla:", round(total, 2))
         print("=============================")   
     
         
@@ -284,7 +330,3 @@ class VendedorVista:
         print("Total de ventas:", ventas_senior)
     
         print("================================================")
-        
-        
-    
- 

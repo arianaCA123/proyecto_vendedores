@@ -3,12 +3,12 @@ from modelo.vendedor import Vendedor
 
 class RegistroVendedores:
 
-    # ==================================================
+    
     # CONSTRUCTOR
     # Lista de objetos Vendedor y listas asociadas.
     # Los datos de un vendedor están en la MISMA posición
     # en todas las listas.
-    # ==================================================
+    
 
     def __init__(self):
         self.__vendedores = []            # objetos Vendedor
@@ -22,9 +22,9 @@ class RegistroVendedores:
 
        
 
-    # ==================================================
+    
     # BÚSQUEDAS
-    # ==================================================
+    
 
     # Devuelve el objeto Vendedor con esa cédula, o None si no existe.
     def buscar_por_cedula(self, cedula):
@@ -51,9 +51,9 @@ class RegistroVendedores:
     def cantidad_vendedores(self):
         return len(self.__vendedores)
 
-    # ==================================================
+    
     # OBTENER DATOS DEL MES (por posición)
-    # ==================================================
+    
 
     def get_ventas_mes(self, posicion):
         return self.__ventas_mes[posicion]
@@ -76,9 +76,9 @@ class RegistroVendedores:
     def get_comision_mes(self, posicion):
         return self.__comisiones_mes[posicion]
 
-    # ==================================================
+    
     # REGISTRAR VENDEDOR
-    # ==================================================
+    
 
     def crear_vendedor(self, cedula, nombre, categoria, salario_base, meta_mensual):
         # No se permiten cédulas repetidas
@@ -100,9 +100,9 @@ class RegistroVendedores:
         self.__comisiones_mes.append(0)
         return "CREADO"
 
-    # ==================================================
+    
     # MODIFICAR VENDEDOR
-    # ==================================================
+    
 
     def modificar_vendedor(self, cedula, nuevo_nombre, nueva_categoria,
                             nuevo_salario_base, nueva_meta_mensual):
@@ -118,9 +118,9 @@ class RegistroVendedores:
         vendedor.set_meta_mensual(nueva_meta_mensual)
         return True
 
-    # ==================================================
+    
     # ELIMINAR VENDEDOR
-    # ==================================================
+    
 
     def eliminar_vendedor(self, cedula):
         posicion = self.buscar_posicion(cedula)
@@ -137,32 +137,35 @@ class RegistroVendedores:
         self.__planilla_procesada.pop(posicion)
         self.__salarios_netos_mes.pop(posicion)
         self.__comisiones_mes.pop(posicion)
-
-        self.__Validez = False #Se reinicia la variable condicional para que no se pueda modificar un vendedor hasta crear un nuevo mes
         return True
 
-    # ==================================================
+   
     # REGISTRAR / ACTUALIZAR DATOS DEL MES
-    # ==================================================
+    
 
     def registrar_datos_mes(self, cedula, ventas, horas, dias, bono):
         posicion = self.buscar_posicion(cedula)
 
         if posicion is None:
-            return False
+            return "NO_EXISTE"
+
+        # Si la planilla de este vendedor ya se procesó, no se cambian sus datos
+        # hasta iniciar un nuevo mes (los acumulados ya se sumaron)
+        if self.__planilla_procesada[posicion] == True:
+            return "YA_PROCESADA"
 
         # Se reemplazan los valores en la posición del vendedor
         self.__ventas_mes[posicion] = ventas
         self.__horas_extra[posicion] = horas
         self.__dias_ausencia[posicion] = dias
         self.__bonos_especiales[posicion] = bono
-        return True
+        return "ACTUALIZADO"
 
-    # ==================================================
+    
     # INICIAR NUEVO MES
     # Reinicia los datos del mes. Los acumulados del
     # objeto Vendedor NO se modifican.
-    # ==================================================
+    
 
     def iniciar_nuevo_mes(self):
         posicion = 0
@@ -179,9 +182,9 @@ class RegistroVendedores:
             self.__comisiones_mes[posicion] = 0
             posicion = posicion + 1
 
-    # ==================================================
+    
     # PROCESAR PLANILLA DE UN VENDEDOR
-    # ==================================================
+    
 
     def procesar_planilla(self, cedula):
         posicion = self.buscar_posicion(cedula)
@@ -211,11 +214,11 @@ class RegistroVendedores:
         self.__comisiones_mes[posicion] = comision_final
         return "PROCESADA"
 
-    # ==================================================
+    
     # PROCESAR PLANILLA DE TODOS
     # Devuelve cuántas se procesaron.
     # Omitidas = cantidad_vendedores() - procesadas
-    # ==================================================
+    
 
     def procesar_todos(self):
         procesadas = 0
@@ -224,9 +227,9 @@ class RegistroVendedores:
                 procesadas = procesadas + 1
         return procesadas
 
-    # ==================================================
+    
     # REPORTES Y ESTADÍSTICAS
-    # ==================================================
+    
 
     # se crea un método para obtener el porcentaje de cumplimiento de cada vendedor
     # para que el controlador no se relacione directamente con el modelo del vendedor
@@ -324,20 +327,3 @@ class RegistroVendedores:
                 total = total + self.__ventas_mes[posicion]
             posicion = posicion + 1
         return total
-
-
-    def validez(self):
-        validez = False  #Esta es una metodo condicional ,para que al crear una planilla 
-                        #no se pueda modificar sobre un vendedor hasta crear un nuevo mes
-
-        contador = 0
-        for vendedor in self.__vendedores:
-            if self.__planilla_procesada[self.buscar_posicion(vendedor.get_cedula())] == True:
-                contador += 1
-
-        if contador == len(self.__vendedores):
-            validez = True
-        else:
-            validez = False
-
-        return validez

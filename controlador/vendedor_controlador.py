@@ -96,47 +96,91 @@ class VendedorControlador:
 #======================================================================
 
     def registar_datos_mes(self):
-        if (self.registro.validez()):
-            self.vista.mostrar_mensaje("No se puede registrar información del mes. \nSe debe iniciar un nuevo mes primero.")
-            return
-
-        
         cedula = self.vista.solicitar_cedula()
         vendedor = self.registro.buscar_por_cedula(cedula)
 
-        if (vendedor is not None):
-            ventas_mes = self.vista.solicitar_ventas_mes()
-            horas_extra = self.vista.solicitar_horas_extra()
-            dias_ausencia = self.vista.solicitar_dias_ausencia()
-            bono = self.vista.solicitar_bono_especial()
-
-            self.registro.registrar_datos_mes(cedula, ventas_mes, horas_extra, dias_ausencia, bono)
-            self.vista.mostrar_mensaje("Información del mes registrada exitosamente.")
-
-        else:
+        if (vendedor is None):
             self.vista.mostrar_mensaje("Vendedor no encontrado. Verifique la cedula ingresada.")
+            return
+
+        posicion = self.registro.buscar_posicion(cedula)
+        if (self.registro.get_planilla_procesada(posicion) == True):
+            self.vista.mostrar_mensaje("La planilla de este vendedor ya fue procesada. \nDebe iniciar un nuevo mes para registrar nuevos datos.")
+            return
+
+        ventas_mes = self.vista.solicitar_ventas_mes()
+        horas_extra = self.vista.solicitar_horas_extra()
+        dias_ausencia = self.vista.solicitar_dias_ausencia()
+        bono = self.vista.solicitar_bono_especial()
+
+        self.registro.registrar_datos_mes(cedula, ventas_mes, horas_extra, dias_ausencia, bono)
+        self.vista.mostrar_mensaje("Información del mes registrada exitosamente.")
 
     def procesar_planilla_vendedor(self):
         cedula = self.vista.solicitar_cedula()
+        resultado = self.registro.procesar_planilla(cedula)      #se llama una sola vez
 
-        if (self.registro.procesar_planilla(cedula) == "PROCESADA"):
-            self.vista.mostrar_mensaje("Planilla procesada exitosamente para el vendedor.")
-        elif (self.registro.procesar_planilla(cedula) == "NO_EXISTE"):
+        if (resultado == "NO_EXISTE"):
             self.vista.mostrar_mensaje("Vendedor no encontrado. Verifique la cedula ingresada.")
-        else:
+        elif (resultado == "YA_PROCESADA"):
             self.vista.mostrar_mensaje("La planilla ya fue procesada para este vendedor.")
+        else:
+            self.vista.mostrar_mensaje("Planilla procesada exitosamente para el vendedor.")
+            self.mostrar_desglose_planilla(cedula)
+
+    #obtiene los datos del objeto y de las listas asociadas, hace los calculos
+    #con los metodos del modelo y se los envia a la vista para mostrar el desglose
+    def mostrar_desglose_planilla(self, cedula):
+        vendedor = self.registro.buscar_por_cedula(cedula)
+        posicion = self.registro.buscar_posicion(cedula)
+
+        ventas_mes = self.registro.get_ventas_mes(posicion)
+        horas_extra = self.registro.get_horas_extra(posicion)
+        dias_ausencia = self.registro.get_dias_ausencia(posicion)
+        bono_especial = self.registro.get_bono_especial(posicion)
+
+        porcentaje_cumplimiento = vendedor.calcular_porcentaje_cumplimiento(ventas_mes)
+        comision_inicial = vendedor.calcular_comision_inicial(ventas_mes)
+        ajuste_categoria = vendedor.ajuste_categoria()
+        comision_final = vendedor.calcular_comision_final(ventas_mes)
+        pago_horas_extra = vendedor.calcular_pago_horas_extra(horas_extra)
+        bono_rendimiento = vendedor.calcular_bono_rendimiento(ventas_mes)
+        total_ingresos = vendedor.calcular_total_ingresos(ventas_mes, horas_extra, bono_especial)
+        deduccion_ausencias = vendedor.calcular_deduccion_ausencias(dias_ausencia)
+        salario_ajustado = vendedor.calcular_salario_ajustado(ventas_mes, horas_extra, dias_ausencia, bono_especial)
+        deduccion_obligatoria = vendedor.calcular_deduccion_obligatoria(salario_ajustado)
+        impuesto = vendedor.calcular_impuesto(salario_ajustado)
+        salario_neto = self.registro.get_salario_neto_mes(posicion)
+
+        self.vista.mostrar_planilla(vendedor, ventas_mes, horas_extra,
+                                    bono_especial, porcentaje_cumplimiento,
+                                    comision_inicial, ajuste_categoria,
+                                    comision_final, pago_horas_extra,
+                                    bono_rendimiento, total_ingresos,
+                                    deduccion_ausencias, deduccion_obligatoria,
+                                    impuesto, salario_neto)
 
     def procesar_planilla_todos_vendedores(self):
-        if (self.registro.procesar_todos() != 0):
-            self.vista.mostrar_mensaje("Planilla procesada exitosamente para todos los vendedores.")
-        else:
-            self.vista.mostrar_mensaje("No hay vendedores registrados o ya se procesó la planilla para todos.")
+        if (self.registro.esta_vacio()):
+            self.vista.mostrar_mensaje("No hay vendedores registrados.")
+            return
+
+        procesadas = self.registro.procesar_todos()
+        omitidas = self.registro.cantidad_vendedores() - procesadas
+
+        self.vista.mostrar_mensaje("Planillas procesadas: " + str(procesadas))
+        self.vista.mostrar_mensaje("Planillas omitidas (ya procesadas anteriormente): " + str(omitidas))
 
     def iniciar_nuevo_mes(self):
-        if (self.registro.iniciar_nuevo_mes() == "Vacio"):
+        if (self.registro.esta_vacio()):
             self.vista.mostrar_mensaje("No hay vendedores registrados.")
-        else:
+            return
+
+        if (self.vista.confirmar_nuevo_mes()):
+            self.registro.iniciar_nuevo_mes()
             self.vista.mostrar_mensaje("Se ha iniciado un nuevo mes.")
+        else:
+            self.vista.mostrar_mensaje("Operacion cancelada. No se reiniciaron los datos.")
 
 #======================================================================
 #========================GESTIÓN DE VENDEDORES=========================
@@ -217,32 +261,18 @@ class VendedorControlador:
             self.vista.mostrar_mensaje("Vendedor no encontrado. Verifique la cedula ingresada")
 
     def listar_vendedores(self):
+        if (self.registro.esta_vacio()):
+            self.vista.mostrar_mensaje("No hay vendedores registrados.")
+            return
+
         vendedores = self.registro.listar_vendedores()
+        self.vista.mostrar_titulo_vendedores()
+        for vendedor in vendedores:
+            self.vista.mostrar_vendedor(vendedor)
 
-        if (vendedores is not None):
-            self.vista.mostrar_titulo_vendedores()
-            for vendedor in vendedores:
-                self.vista.mostrar_vendedor(vendedor)
+        self.vista.mostrar_mensaje("====================================")
 
-            self.vista.mostrar_mensaje("====================================")
 
-    def registrar_informacion_mes(self):
-        cedula = self.vista.solicitar_cedula()
-        vendedor = self.registro.buscar_por_cedula(cedula)
-
-        if (vendedor is not None):
-            ventas_mes = self.vista.solicitar_ventas_mes()
-            horas_extra = self.vista.solicitar_horas_extra()
-            dias_ausencia = self.vista.solicitar_dias_ausencia()
-            bono_especial = self.vista.solicitar_bono_especial()
-
-            self.registro.registrar_informacion_mes(cedula, ventas_mes, horas_extra, dias_ausencia, bono_especial)
-            self.vista.mostrar_mensaje("Información del mes registrada exitosamente.")
-
-        else:
-            self.vista.mostrar_mensaje("Vendedor no encontrado. Verifique la cedula ingresada.")
-
-    
 #======================================================================
 #===============================REPORTES===============================
 #======================================================================
@@ -250,7 +280,7 @@ class VendedorControlador:
     def reporte_general_vendedores(self):
         vendedores = self.registro.listar_vendedores()
 
-        if (vendedores is not None):
+        if (not self.registro.esta_vacio()):
             for vendedor in vendedores:
                 posicion = self.registro.buscar_posicion(vendedor.get_cedula())
                 ventas_mes = self.registro.get_ventas_mes(posicion)
@@ -295,14 +325,14 @@ class VendedorControlador:
             self.vista.mostrar_mensaje("No hay datos disponibles para mostrar.")
 
     def reporte_vendedores_bajo_meta(self):
+        if (self.registro.esta_vacio()):
+            self.vista.mostrar_mensaje("No hay vendedores registrados.")
+            return
+
         vendedores = self.registro.vendedores_bajo_meta()
         cantidad = len(vendedores)
-        if (vendedores is not None) and (cantidad > 0):
+        if (cantidad > 0):
             self.vista.mostrar_vendedores_bajo_meta(vendedores, cantidad)
-
-        elif (vendedores is None):
-            self.vista.mostrar_mensaje("No hay vendedores registrados.")
-
         else:
             self.vista.mostrar_mensaje("Todos los vendedores han cumplido su meta mensual.")
 

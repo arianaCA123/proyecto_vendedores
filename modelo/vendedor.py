@@ -78,8 +78,10 @@ class Vendedor:
 #==========================================================
 
     def calcular_porcentaje_cumplimiento(self, ventas_mes):
-        porcentaja_cumplimiento = (ventas_mes / self.get_meta_mensual()) * 100
-        return porcentaja_cumplimiento
+        if self.get_meta_mensual() <= 0:     #evita la division entre cero
+            return 0
+        porcentaje_cumplimiento = (ventas_mes / self.get_meta_mensual()) * 100
+        return porcentaje_cumplimiento
 
 #=======================================================
 
@@ -126,7 +128,9 @@ class Vendedor:
 #=======================================================
 
     def calcular_bono_rendimiento(self, ventas_mes):
-        return 50000 if self.calcular_porcentaje_cumplimiento(ventas_mes) >= 110 else 0
+        if self.calcular_porcentaje_cumplimiento(ventas_mes) >= 110:
+            return 50000
+        return 0
 
 #=======================================================
 
@@ -136,18 +140,30 @@ class Vendedor:
 
 #=======================================================
 
-    def calcular_salario_neto(self, ventas_mes, horas_extra, dias_ausencia, bono_especial):
-        comision_final = self.calcular_comision_final(ventas_mes)
-
+    def calcular_total_ingresos(self, ventas_mes, horas_extra, bono_especial):
         total_ingresos = (self.get_salario_base()
                            + self.calcular_pago_horas_extra(horas_extra)
-                           + comision_final
+                           + self.calcular_comision_final(ventas_mes)
                            + self.calcular_bono_rendimiento(ventas_mes)
                            + bono_especial)
-        
-        salario_ajustado = total_ingresos - self.calcular_deduccion_ausencias(dias_ausencia)
+        return total_ingresos
+
+#=======================================================
+
+    def calcular_salario_ajustado(self, ventas_mes, horas_extra, dias_ausencia, bono_especial):
+        salario_ajustado = (self.calcular_total_ingresos(ventas_mes, horas_extra, bono_especial)
+                            - self.calcular_deduccion_ausencias(dias_ausencia))
+        return salario_ajustado
+
+#=======================================================
+
+    def calcular_deduccion_obligatoria(self, salario_ajustado):
         deduccion_obligatoria = salario_ajustado * 0.10
-        
+        return deduccion_obligatoria
+
+#=======================================================
+
+    def calcular_impuesto(self, salario_ajustado):
         if salario_ajustado <= 1000000:
             impuesto = 0
 
@@ -156,6 +172,15 @@ class Vendedor:
 
         else:
             impuesto = 500000 * 0.10 + (salario_ajustado - 1500000) * 0.15
+
+        return impuesto
+
+#=======================================================
+
+    def calcular_salario_neto(self, ventas_mes, horas_extra, dias_ausencia, bono_especial):
+        salario_ajustado = self.calcular_salario_ajustado(ventas_mes, horas_extra, dias_ausencia, bono_especial)
+        deduccion_obligatoria = self.calcular_deduccion_obligatoria(salario_ajustado)
+        impuesto = self.calcular_impuesto(salario_ajustado)
 
         salario_neto = salario_ajustado - deduccion_obligatoria - impuesto
         return salario_neto
@@ -176,14 +201,12 @@ class Vendedor:
 
     #sirve para obtener el porcentaje de ajuste de acuerdo a la categoria del vendedor
     def ajuste_categoria(self):
-        if self.get_categoria() == "Junior":
-            return "0.0"
-        elif self.get_categoria() == "SemiSenior":
-            return "10.0"
+        if self.get_categoria() == "SemiSenior":
+            return 10
         elif self.get_categoria() == "Senior":
-            return "20.0"
+            return 20
         else:
-            return "0.0"
+            return 0
 
 #=======================str========================
 
