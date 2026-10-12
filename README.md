@@ -13,9 +13,9 @@ históricos de cada vendedor.
 
 | Nombre | Carné | Módulo a cargo |
 |---|---|---|
-| Ariana | _carné_ | Gestión de vendedores y datos del mes |
-| Michelle | _carné_ | Procesamiento de planilla |
-| Carlos | _carné_ | Reportes y estadísticas |
+| Ariana Carrillo Azofeifa | C5D753 | Gestión de vendedores y datos del mes |
+| Michelle Hernández | C4l585 | Procesamiento de planilla |
+| Carlos Alvarado | C30348 | Reportes y estadísticas |
 
 ## Stack tecnológico
 
