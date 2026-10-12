@@ -161,7 +161,7 @@ class Vendedor:
         return salario_neto
 
 #=======================================================================
-#================ ******* ACUTALIZAR ACUMULADOS ******* ================
+#================ ******* ACTUALIZAR ACUMULADOS ******* ================
 #=======================================================================
 
     def actualizar_acumulados(self, ventas_mes, comision_final):

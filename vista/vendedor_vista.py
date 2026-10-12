@@ -14,7 +14,7 @@ class VendedorVista:
    #submenu de vendedores
     def mostrar_submenu_vendedores(self):
         print()
-        print("------- GESTION DE VENDEDORES -----_--")
+        print("------- GESTION DE VENDEDORES -------")
         print("1) Registrar vendedor")
         print("2) Consultar vendedor")
         print("3) Modificar vendedor")
@@ -39,7 +39,7 @@ class VendedorVista:
         
      
     #_____________________________________________________________________________
-    #Datos para registrar el vendedor  (la categoria se comprara y se asigna)
+    #Datos para registrar el vendedor  (la categoria se compara y  asigna)
     
     def solicitar_cedula(self):
         return input("Digite la Cedula: ")
@@ -189,7 +189,7 @@ class VendedorVista:
         print("=====================================================")
 
   #_____________________________________________________
-    #========================REPORTES Y ESTADISTICAS============================
+    #========================  REPORTES Y ESTADISTICAS  ============================
     def mostrar_reporte_general(self, vendedor, ventas_mes, porcentaje_cumplimiento):
         print()
         print("========== REPORTE GENERAL DE VENDEDORES ==========")
@@ -260,7 +260,7 @@ class VendedorVista:
         print("=============================")   
     
         
-    #=================ESTADISTICAS POR CATEGORIA====================
+    #================= ESTADISTICAS POR CATEGORIA ====================
         
     def mostrar_estadisticas_categoria(self, cantidad_junior, ventas_junior,
                                    cantidad_semisenior, ventas_semisenior,
