@@ -11,29 +11,33 @@ históricos de cada vendedor.
 
 ## Desarrolladores
 
-| Nombre | Carné | Módulo a cargo |
+| Nombre | Carné | Opciones del menú principal a cargo |
 |---|---|---|
-| Ariana Carrillo Azofeifa | C5D753 | Gestión de vendedores y datos del mes |
-| Michelle Hernández | C4l585 | Procesamiento de planilla |
-| Carlos Alvarado | C30348 | Reportes y estadísticas |
+| Ariana Carrillo Azofeifa | C5D753 | 1. Gestión de vendedores, 2. Registrar / actualizar datos del mes, `main.py`, mejoras y correcciones generales |
+| Michelle Hernández | C4l585 | 3. Procesar planilla de un vendedor, 4. Procesar planilla de todos los vendedores |
+| Carlos Alvarado | C30348 | 5. Reportes, 6. Iniciar nuevo mes, 7. Salir |
+
+Los tres integrantes trabajaron en conjunto en la vista (`vendedor_vista.py`)
+y en el controlador (`vendedor_controlador.py`).
 
 ## Stack tecnológico
 
 | Tecnología | Uso en el proyecto |
 |---|---|
-| **Python 3** | Lenguaje de programación de todo el sistema (sin librerías externas) |
+| **Python 3.10 o superior** | Lenguaje de todo el sistema, sin librerías externas |
 | **Programación Orientada a Objetos** | Clase `Vendedor` con atributos privados y métodos get/set |
 | **Patrón MVC** | Separación en Modelo, Vista y Controlador |
-| **Listas unidimensionales** | Lista de objetos `Vendedor` y listas asociadas por posición (sin matrices ni diccionarios) |
+| **Listas unidimensionales** | Lista de objetos `Vendedor` y listas asociadas por posición, sin matrices ni diccionarios |
 | **Thonny** | Entorno de desarrollo (IDE) |
-| **Git / Git Bash** | Control de versiones |
-| **GitHub** | Repositorio remoto, ramas por integrante y Pull Requests |
+| **Git y GitHub** | Control de versiones y repositorio compartido |
 
-El sistema trabaja en memoria: no usa archivos ni bases de datos.
+El sistema trabaja en memoria: no usa archivos ni bases de datos. Los datos se
+pierden al cerrar el programa.
 
 ## Cómo ejecutar
 
-1. Tener instalado Python 3.
+1. Tener instalado **Python 3.10 o superior**. El menú usa `match`/`case`, que
+   no existe en versiones anteriores.
 2. Abrir la carpeta del proyecto.
 3. Ejecutar `main.py`:
 
@@ -47,14 +51,16 @@ Siempre se debe ejecutar `main.py`, no los otros archivos.
 ## Estructura del proyecto (MVC)
 
 ```
-proyecto_planilla/
+Proyecto1_C5D753_C4l585_C30348/
 ├── modelo/
-│   ├── vendedor.py               Clase Vendedor (atributos privados, get/set)
-│   └── registro_vendedores.py    Listas, búsquedas, cálculos y reportes
+│   ├── vendedor.py               Clase Vendedor: atributos privados, get/set,
+│   │                             cálculos de planilla y actualización de acumulados
+│   └── registro_vendedores.py    Lista de objetos, listas asociadas, búsquedas,
+│                                 CRUD, procesamiento de planilla y reportes
 ├── vista/
-│   └── vendedor_vista.py         Menús, lectura de datos y mensajes
+│   └── vendedor_vista.py         Menús, lectura y validación de datos, mensajes
 ├── controlador/
-│   └── vendedor_controlador.py   Conecta la vista con el modelo
+│   └── vendedor_controlador.py   Recibe la opción del usuario y conecta vista y modelo
 └── main.py                       Punto de entrada del sistema
 ```
 
@@ -62,32 +68,34 @@ proyecto_planilla/
 
 - **Gestión de vendedores:** registrar, consultar, modificar, eliminar y listar.
 - **Datos del mes:** ventas, horas extra, días de ausencia y bono especial.
-- **Planilla:** procesamiento individual o de todos los vendedores, con control
-  para no procesar dos veces al mismo vendedor en el mismo mes.
+- **Planilla:** procesamiento individual con desglose completo, o de todos los
+  vendedores indicando cuántas planillas se procesaron y cuántas se omitieron.
 - **Reportes:** reporte general, mayores ventas, mayor cumplimiento, total y
   promedio de ventas, vendedores bajo la meta, total de comisiones, total de
   planilla y estadísticas por categoría.
-- **Nuevo mes:** reinicia los datos mensuales y conserva los acumulados.
-
-## Organización del trabajo
-
-Cada archivo está dividido en secciones con el comentario
-`===== INTEGRANTE X =====` y cada integrante escribe solo en su sección.
-
-| Rama | Responsable |
-|---|---|
-| `main` | Versión estable (solo se actualiza con Pull Request) |
-| `gestion` | Ariana |
-| `planilla` | Michelle |
-| `reportes` | Carlos |
+- **Nuevo mes:** reinicia los datos mensuales y conserva los acumulados de cada
+  vendedor.
 
 ## Consideraciones para la revisión
 
 - Se agregó la lista `comisiones_mes`, además de las 6 listas obligatorias,
-  para calcular el reporte de total de comisiones sin recalcularlas. Se mantiene
-  sincronizada igual que las demás.
-- El desglose de la planilla se devuelve como tupla; no se usan diccionarios
-  ni listas bidimensionales.
-- Validaciones incluidas: cédulas duplicadas, vendedores inexistentes, meta
-  mayor que cero, doble procesamiento de planilla y confirmación antes de
-  iniciar un nuevo mes.
+  para el reporte de total de comisiones. Se mantiene sincronizada igual que
+  las demás: se agrega al registrar, se elimina en la misma posición y se
+  reinicia en el nuevo mes.
+- Los cálculos de planilla están en la clase `Vendedor` (modelo). La vista solo
+  pide y muestra datos; no contiene cálculos ni accede a las listas.
+- Al eliminar un vendedor se usa `pop(posicion)` en todas las listas para
+  mantener la correspondencia por posición.
+- Validaciones incluidas:
+  - Cédulas duplicadas.
+  - Vendedores inexistentes al consultar, modificar, eliminar o procesar.
+  - Categoría válida (Junior, SemiSenior o Senior).
+  - Salario base y meta mensual mayores que cero, para evitar la división
+    entre cero.
+  - Ventas, horas extra, días de ausencia y bono especial no negativos.
+  - No se procesa dos veces la planilla de un vendedor en el mismo mes.
+  - No se modifican los datos del mes de un vendedor cuya planilla ya fue
+    procesada.
+  - Confirmación antes de iniciar un nuevo mes.
+- El programa no valida que se escriban letras donde se pide un número; esa
+  validación no forma parte de las mínimas del enunciado.
