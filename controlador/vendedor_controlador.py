@@ -80,17 +80,6 @@ class VendedorControlador:
                 case _:
                     self.vista.mostrar_mensaje("Opción inválida. Por favor, seleccione una opción válida.")
 
-        '''
-        SISTEMA DE GESTIÓN DE VENDEDORES 
-            1. Gestión de vendedores 
-            2. Registrar / actualizar datos del mes 
-            3. Procesar planilla de un vendedor 
-            4. Procesar planilla de todos los vendedores 
-            5. Reportes 
-            6. Iniciar nuevo mes 
-            7. Salir 
-        '''
-
 #======================================================================
 #============================MENU PRINCIPAL============================
 #======================================================================
@@ -111,9 +100,9 @@ class VendedorControlador:
         ventas_mes = self.vista.solicitar_ventas_mes()
         horas_extra = self.vista.solicitar_horas_extra()
         dias_ausencia = self.vista.solicitar_dias_ausencia()
-        bono = self.vista.solicitar_bono_especial()
+        bono_especial = self.vista.solicitar_bono_especial()
 
-        self.registro.registrar_datos_mes(cedula, ventas_mes, horas_extra, dias_ausencia, bono)
+        self.registro.registrar_datos_mes(cedula, ventas_mes, horas_extra, dias_ausencia, bono_especial)
         self.vista.mostrar_mensaje("Información del mes registrada exitosamente.")
 
     def procesar_planilla_vendedor(self):
